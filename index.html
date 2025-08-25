@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTRL+NYC - More Than Gaming</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Space Mono', monospace;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+        
+        /* Glitch effect */
+        @keyframes glitch {
+            0% {
+                text-shadow: 0.05em 0 0 #fff, -0.05em -0.025em 0 #fff,
+                    0.025em 0.05em 0 #fff;
+            }
+            15% {
+                text-shadow: 0.05em 0 0 #fff, -0.05em -0.025em 0 #fff,
+                    0.025em 0.05em 0 #fff;
+            }
+            16% {
+                text-shadow: -0.05em -0.025em 0 #fff, 0.025em 0.025em 0 #fff,
+                    -0.05em -0.05em 0 #fff;
+            }
+            49% {
+                text-shadow: -0.05em -0.025em 0 #fff, 0.025em 0.025em 0 #fff,
+                    -0.05em -0.05em 0 #fff;
+            }
+            50% {
+                text-shadow: 0.025em 0.05em 0 #fff, 0.05em 0 0 #fff,
+                    0 -0.05em 0 #fff;
+            }
+            99% {
+                text-shadow: 0.025em 0.05em 0 #fff, 0.05em 0 0 #fff,
+                    0 -0.05em 0 #fff;
+            }
+            100% {
+                text-shadow: -0.025em 0 0 #fff, -0.025em -0.025em 0 #fff,
+                    -0.025em -0.05em 0 #fff;
+            }
+        }
+        
+        /* Scanline effect */
+        @keyframes scanline {
+            0% {
+                transform: translateY(-100%);
+            }
+            100% {
+                transform: translateY(100vh);
+            }
+        }
+        
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.1), transparent);
+            animation: scanline 8s linear infinite;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 2rem;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid #333;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+        }
+        
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        nav a:hover {
+            text-shadow: 0 0 10px #fff;
+        }
+        
+        nav a::before {
+            content: '> ';
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        nav a:hover::before {
+            opacity: 1;
+        }
+        
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background: radial-gradient(circle at center, #111 0%, #000 100%);
+        }
+        
+        .hero h1 {
+            font-size: clamp(3rem, 10vw, 8rem);
+            font-weight: 700;
+            letter-spacing: -0.05em;
+            animation: glitch 2s infinite;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .hero .tagline {
+            font-size: 1.2rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            opacity: 0.7;
+            margin-bottom: 3rem;
+        }
+        
+        .cta-button {
+            padding: 1rem 3rem;
+            border: 2px solid #fff;
+            background: transparent;
+            color: #fff;
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-button:hover {
+            background: #fff;
+            color: #000;
+            box-shadow: 0 0 30px rgba(255,255,255,0.5);
+        }
+        
+        /* Typing effect */
+        .typing {
+            border-right: 2px solid #fff;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { border-color: #fff; }
+            51%, 100% { border-color: transparent; }
+        }
+        
+        /* Content Sections */
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section h2 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .section h2::before,
+        .section h2::after {
+            content: '//';
+            opacity: 0.3;
+            margin: 0 1rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .card {
+            border: 1px solid #333;
+            padding: 2rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .card:hover::before {
+            left: 100%;
+        }
+        
+        .card:hover {
+            border-color: #fff;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255,255,255,0.1);
+        }
+        
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .card p {
+            opacity: 0.8;
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+        
+        /* Stream Schedule */
+        .schedule {
+            background: #0a0a0a;
+            border-left: 3px solid #fff;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .schedule-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid #222;
+        }
+        
+        .schedule-item:last-child {
+            border-bottom: none;
+        }
+        
+        .schedule-item .time {
+            color: #666;
+            font-family: 'Space Mono', monospace;
+        }
+        
+        /* ASCII Art */
+        .ascii-art {
+            font-size: 0.7rem;
+            line-height: 1;
+            text-align: center;
+            margin: 3rem 0;
+            opacity: 0.3;
+            white-space: pre;
+            font-family: monospace;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem;
+            border-top: 1px solid #333;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .hero .tagline {
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Noise overlay */
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.03;
+            z-index: 1;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgbnVtT2N0YXZlcz0iMTAiLz48ZmVDb2xvck1hdHJpeCB2YWx1ZXM9IjAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDEgMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iMSIvPjwvc3ZnPg==');
+        }
+    </style>
+</head>
+<body>
+    <div class="noise"></div>
+    <div class="scanline"></div>
+    
+    <nav>
+        <ul>
+            <li><a href="#home">HOME</a></li>
+            <li><a href="#streams">STREAMS</a></li>
+            <li><a href="#vlogs">VLOGS</a></li>
+            <li><a href="#squad">SQUAD</a></li>
+            <li><a href="#contact">CONTACT</a></li>
+        </ul>
+    </nav>
+    
+    <section class="hero" id="home">
+        <h1>CTRL+NYC</h1>
+        <p class="tagline">MORE THAN A STREAM<span class="typing"></span></p>
+        <button class="cta-button" onclick="window.location.href='#streams'">ENTER THE VOID</button>
+    </section>
+    
+    <section class="section" id="about">
+        <h2>SYSTEM.INIT</h2>
+        <p style="text-align: center; font-size: 1.1rem; max-width: 800px; margin: 0 auto; line-height: 1.8;">
+            We're not just another gaming crew. We're the kids your parents warned you about - 
+            if your parents were cool enough to understand what we do. We took over NYC, claimed these 
+            streets as our playground, and made the city our content. This is where gaming meets 
+            real life, where streams become stories, and where a squad becomes family.
+        </p>
+        
+        <div class="ascii-art">
+    _____ _______ _____  _      _   _  _     _______ 
+   / ____|__   __|  __ \| |    _| |_| \ | |_   _/ ____| 
+  | |       | |  | |__) | |   |_   _|  \| | | || |      
+  | |       | |  |  _  /| |     |_| | . ` | | || |      
+  | |____   | |  | | \ \| |____     | |\  | | || |____  
+   \_____|  |_|  |_|  \_\______|    |_| \_| |_| \_____|
+        </div>
+    </section>
+    
+    <section class="section" id="streams">
+        <h2>LIVE.FEED</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>FORTNITE DOMINATION</h3>
+                <p>Watch us drop into the island and show these kids how NYC players really move. 
+                   Zero builds? Box fights? Creative maps? We run it all. Every dub is for the city.</p>
+            </div>
+            <div class="card">
+                <h3>LATE NIGHT SESSIONS</h3>
+                <p>When the city never sleeps, neither do we. Catch our midnight grind sessions 
+                   where the vibes are immaculate and the plays are cracked. Adults go to bed, 
+                   legends stay up.</p>
+            </div>
+            <div class="card">
+                <h3>CUSTOM LOBBIES</h3>
+                <p>Every Friday we host viewer games. Come test your skills against the squad. 
+                   Fair warning: we don't go easy on anyone. Brooklyn rules apply.</p>
+            </div>
+        </div>
+        
+        <div class="schedule">
+            <h3 style="margin-bottom: 2rem;">TRANSMISSION SCHEDULE</h3>
+            <div class="schedule-item">
+                <span>MONDAY - WEDNESDAY</span>
+                <span class="time">7PM - 11PM EST</span>
+            </div>
+            <div class="schedule-item">
+                <span>THURSDAY - FRIDAY</span>
+                <span class="time">8PM - 2AM EST</span>
+            </div>
+            <div class="schedule-item">
+                <span>SATURDAY - SUNDAY</span>
+                <span class="time">ALL DAY GRIND</span>
+            </div>
+        </div>
+    </section>
+    
+    <section class="section" id="vlogs">
+        <h2>REALITY.CHECK</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>CITY CHRONICLES</h3>
+                <p>From bodega runs to rooftop sessions, we capture the NYC experience through fresh eyes. 
+                   No filters, no fake stuff - just raw footage of kids conquering the greatest city 
+                   on earth, one block at a time.</p>
+            </div>
+            <div class="card">
+                <h3>SQUAD ADVENTURES</h3>
+                <p>Watch us explore Times Square like tourists who know better, discover hidden subway 
+                   spots, and turn every corner of Manhattan into our personal content studio. Your 
+                   favorite streamers could never.</p>
+            </div>
+            <div class="card">
+                <h3>BEHIND THE SCREENS</h3>
+                <p>Setup tours, day in the life content, and the chaotic energy that happens when 
+                   the cameras "stop" rolling. This is where you see the humans behind the 
+                   controllers.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="section" id="squad">
+        <h2>USER.PROFILES</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>@KINGOFQUEENS</h3>
+                <p>The IGL with ice in his veins. Started from the bottom of SBMM, now we're here. 
+                   Builds faster than the Q train. Favorite drop: Tilted (obviously).</p>
+            </div>
+            <div class="card">
+                <h3>@BROOKLYNRAGE</h3>
+                <p>Sniper god who never misses - in game or with the jokes. If you hear him laughing, 
+                   you're already eliminated. Streams from a fire escape because "the vibes are better."</p>
+            </div>
+            <div class="card">
+                <h3>@MANHATTANMAYHEM</h3>
+                <p>Creative warrior who turns every fight into content. Invented three meta strategies 
+                   that Epic had to patch. Still bitter about it. Carries more heals than a pharmacy.</p>
+            </div>
+            <div class="card">
+                <h3>@BRONXBOMBER</h3>
+                <p>The clutch master who thrives under pressure. 1v4? Easy work. Has more earnings 
+                   than your favorite pro (but stays humble). Pizza tier list videos go crazy.</p>
+            </div>
+        </div>
+    </section>
+    
+    <footer id="contact">
+        <p>CTRL+NYC © 2024 | WE RUN THIS CITY NOW</p>
+        <p style="margin-top: 1rem; opacity: 0.5;">
+            [SYSTEM STATUS: ONLINE] [PING: 0MS] [VIBES: IMMACULATE]
+        </p>
+    </footer>
+    
+    <script>
+        // Add some interactive elements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Glitch effect on hover
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.animation = 'glitch 0.3s';
+                    setTimeout(() => {
+                        this.style.animation = '';
+                    }, 300);
+                });
+            });
+            
+            // Smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // Random glitch on title
+            const title = document.querySelector('.hero h1');
+            setInterval(() => {
+                if (Math.random() > 0.95) {
+                    title.style.animation = 'glitch 0.5s';
+                    setTimeout(() => {
+                        title.style.animation = 'glitch 2s infinite';
+                    }, 500);
+                }
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
